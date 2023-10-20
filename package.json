@@ -1,0 +1,21 @@
+{
+  "name": "ndm2023-live-startlist",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "type": "module",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fastify/static": "^6.11.2",
+    "dotenv": "^16.3.1",
+    "fastify": "^4.24.3",
+    "sql-template-strings": "^2.2.2",
+    "sqlite": "^5.0.1",
+    "sqlite3": "^5.1.6"
+  }
+}

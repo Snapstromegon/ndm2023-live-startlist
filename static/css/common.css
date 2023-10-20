@@ -1,0 +1,32 @@
+:root {
+  --color-hue-blue: 240;
+  --color-hue-red: 27;
+  --color-hue-yellow: 80;
+  --color-l-dark: 30%;
+  --color-blue: hsl(201.6 91% 15%);
+  --color-red: hsl(359.98 68% 49%);
+  --color-yellow: hsl(39.28 97% 64%);
+  --color-background: hsl(205.83 13% 95%);
+  --text-color: hsl(205.75 5% 10%);
+  --xxxs: 0.1rem;
+  --xxs: 0.2rem;
+  --xs: 0.3rem;
+  --s: 0.5rem;
+  --m: 1rem;
+  --l: 1.2rem;
+  --xl: 1.5rem;
+  --xxl: 3rem;
+  --xxxl: 4rem;
+  --xxxxl: 6rem;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Mona Sans", sans-serif;
+}
+
+html {
+  background: transparent;
+}

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="../css/common.css">
+  <link rel="stylesheet" href="../css/fonts.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      overflow: hidden;
+    }
+
+    .wrapper {
+      display: grid;
+      grid-template-columns: repeat(14, 1fr);
+      gap: 0 2vw;
+      align-items: center;
+      padding: 1vw;
+      background: var(--color-background);
+      position: absolute;
+      bottom: 0;
+      width: 200%;
+      animation: sponsor-loop 60s linear infinite;
+    }
+
+    @keyframes sponsor-loop {
+      0% {
+        transform: translateX(0);
+      }
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+
+    img {
+      max-width: 100%;
+      max-height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <img src="../images/logos/sparkasse.svg">
+    <img src="../images/logos/gwn.svg">
+    <img src="../images/logos/heiner-weiss.svg">
+    <img src="../images/logos/ajata.svg">
+    <img src="../images/logos/kaufmann.svg">
+    <img src="../images/logos/Ingenia.svg">
+    <img src="../images/logos/tomanek.svg">
+    <img src="../images/logos/sparkasse.svg">
+    <img src="../images/logos/gwn.svg">
+    <img src="../images/logos/heiner-weiss.svg">
+    <img src="../images/logos/ajata.svg">
+    <img src="../images/logos/kaufmann.svg">
+    <img src="../images/logos/Ingenia.svg">
+    <img src="../images/logos/tomanek.svg">
+  </div>
+</body>
+</html>

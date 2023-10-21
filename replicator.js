@@ -21,6 +21,8 @@ server.post("/replicate", async (request, response) => {
   return "ok";
 });
 
+server.get("/", async () => "ok");
+
 server.get("/allEntries", async () => cache);
 server.get("/currentEntry", async () => cache.find((entry) => entry.status !== "done"));
 server.get("/allToday", async (request) => {

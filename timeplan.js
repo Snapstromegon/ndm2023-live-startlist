@@ -10,7 +10,7 @@ const db = await open({
 const fillEntryWithStart = async (entry) => {
   if (entry.event_type !== "act" || entry.start_id === null) return entry;
   entry.start = await db.get(
-    SQL`SELECT id, event, category, name FROM Start WHERE id = ${entry.start_id}`
+    SQL`SELECT id, event, category, name, teamname FROM Start WHERE id = ${entry.start_id}`
   );
   entry.start.starters = await db.all(
     SQL`SELECT id, firstname, lastname, gender, club, age FROM Starter JOIN StartStarters ON Starter.id = StartStarters.starter_id WHERE StartStarters.start_id = ${entry.start_id}`

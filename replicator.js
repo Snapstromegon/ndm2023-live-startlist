@@ -36,7 +36,7 @@ server.get("/upcoming/allToday", async (request) => {
 });
 
 const listening = await server.listen({
-  port: process.env.REPLICATOR_HTTP_PORT,
+  port: process.env.REPLICATOR_HTTP_PORT || 8001,
   host: "0.0.0.0",
 });
 console.log(listening);

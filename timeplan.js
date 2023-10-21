@@ -26,7 +26,7 @@ const estimateStart = (timeplan) => {
     }
     entry.plannedStart = new Date(entry.plannedStart);
     if (entry.status === "done") {
-      // Do nothing - entry is done
+      entry.estimated_start = new Date(entry.started);
     } else if (entry.status === "active") {
       entry.estimated_start = new Date(entry.started);
       lastEnd = new Date(
@@ -104,7 +104,7 @@ export const startNextEntry = async () => {
   );
   if(firstOpen === undefined) return null;
   await db.run(
-    SQL`UPDATE Timeplan SET status = 'active', started = datetime('now') WHERE id = ${firstOpen.id}`
+    SQL`UPDATE Timeplan SET status = 'active', started = strftime('%Y-%m-%dT%H:%M:%fZ', 'now') WHERE id = ${firstOpen.id}`
   );
   return firstOpen.id;
 };

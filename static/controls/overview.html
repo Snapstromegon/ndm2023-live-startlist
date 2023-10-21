@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Overview</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      nav {
+        position: sticky;
+        top: 0;
+        backdrop-filter: blur(4px);
+        background: #0002;
+        padding: 0.5rem;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        border: 1px solid #000;
+        padding: 0.5rem;
+      }
+
+      tr.done {
+        background: #0002;
+      }
+      tr.active {
+        background: #0f04;
+      }
+
+      button {
+        padding: 1rem;
+      }
+      #backEntry {
+        background: #f00;
+      }
+      #nextEntry {
+        background: #0f0;
+      }
+    </style>
+    <script type="module">
+      const fixDates = (entry) => {
+        entry.planned_start = new Date(entry.planned_start);
+        if (entry.started) entry.started = new Date(entry.started);
+        entry.estimated_start = new Date(entry.estimated_start);
+      };
+
+      const update = async () => {
+        const response = await fetch("/allEntries");
+        const entries = await response.json();
+        entries.forEach(fixDates);
+        console.log(entries);
+        const dateFormat = new Intl.DateTimeFormat("de-DE", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "numeric",
+          minute: "numeric",
+        });
+        const starts = document.getElementById("starts");
+        starts.innerHTML = "";
+        entries.forEach((entry) => {
+          const row = document.createElement("tr");
+          row.classList.add(entry.status);
+          row.innerHTML = `
+            <td class="order">${entry.order}</td>
+            <td class="status">${entry.status}</td>
+            <td class="plan">${dateFormat.format(entry.planned_start)}</td>
+            <td class="started">${
+              entry.started ? dateFormat.format(entry.started) : ""
+            }</td>
+            <td class="estimate">${dateFormat.format(
+              entry.estimated_start
+            )}</td>
+            <td class="duration">${entry.duration_min}</td>
+            <td class="type">${entry.event_type}</td>
+            <td class="event_name">${entry.event_name || ""}</td>
+            <td class="id">${entry.start?.id || ""}</td>
+            <td class="event">${entry.start?.event || ""}</td>
+            <td class="category">${entry.start?.category || ""}</td>
+            <td class="act_name">${entry.start?.name || ""}</td>
+            <td class="starter">
+              ${
+                entry.start?.starters?.length
+                  ? `
+              <details>
+                <summary>Starter</summary>
+                <table>
+                  <tbody>
+                    ${entry.start?.starters
+                      ?.map(
+                        (starter, i) => `
+                      <tr>
+                        <td>${i + 1}</td>
+                        <td>${starter.id}</td>
+                        <td>${starter.gender}</td>
+                        <td>${starter.firstname}</td>
+                        <td>${starter.lastname}</td>
+                        <td>${starter.club}</td>
+                        <td>${starter.age}</td>
+                      </tr>
+                      `
+                      )
+                      .join("\n")}
+                  </tbody>
+                </table>
+              </details>
+              `
+                  : ""
+              }
+            </td>
+          `;
+          starts.appendChild(row);
+        });
+      };
+
+      setInterval(update, 3000);
+      update();
+
+      document
+        .querySelector("#backEntry")
+        .addEventListener("click", async () => {
+          const response = await fetch("/admin/revertStartNext");
+          const data = await response.json();
+          console.log(data);
+          update();
+        });
+      document
+        .querySelector("#nextEntry")
+        .addEventListener("click", async () => {
+          const response = await fetch("/admin/startNext");
+          const data = await response.json();
+          console.log(data);
+          update();
+        });
+    </script>
+  </head>
+  <body>
+    <nav>
+      <button id="backEntry">Back</button>
+      <button id="nextEntry">Next</button>
+    </nav>
+    <table>
+      <thead>
+        <tr>
+          <th>Order</th>
+          <th>Status</th>
+          <th>Plan</th>
+          <th>Started</th>
+          <th>Estimate</th>
+          <th>Duration</th>
+          <th>Type</th>
+          <th>Event Name</th>
+          <th>ID</th>
+          <th>Event</th>
+          <th>Category</th>
+          <th>Act Name</th>
+          <th>Starter</th>
+        </tr>
+      </thead>
+      <tbody id="starts"></tbody>
+    </table>
+  </body>
+</html>

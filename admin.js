@@ -16,6 +16,9 @@ const updateReplicator = async () => {
   return resp.ok;
 };
 
+// Update replicator at least every minute
+setInterval(updateReplicator, 1000 * 60);
+
 const adminRouter = async (fastify, options) => {
   fastify.get("/replicate", async () => updateReplicator());
   fastify.get("/startNext", async () => {

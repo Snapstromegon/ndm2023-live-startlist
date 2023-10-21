@@ -14,7 +14,9 @@ import fastifyCors from "@fastify/cors";
 import adminRouter from "./admin.js";
 const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
 
-const server = fastify();
+const server = fastify({
+  logger: true,
+});
 
 server.register(fastifyCors, {
   origin: "*",
@@ -24,20 +26,25 @@ server.register(fastifyStatic, {
   root: `${__dirname}/static`,
 });
 
-server.get("/allEntries", async () => getAllEntries());
+let i = 0;
+// setInterval(() => {
+//   console.log("Fake Offset", ++i);
+// }, 5000);
 
-server.get("/currentEntry", async () => getCurrentEntry());
+server.get("/allEntries", async () => getAllEntries({ offset: i }));
+
+server.get("/currentEntry", async () => await getCurrentEntry({ offset: i }));
 
 server.get("/allToday", async (request) => {
   const today = request.query.date || new Date().toISOString().split("T")[0];
-  return getAllEntriesToday(today);
+  return getAllEntriesToday({ today, offset: i });
 });
 
-server.get("/upcoming/all", async () => getUpcomingEntries());
+server.get("/upcoming/all", async () => getUpcomingEntries({ offset: i }));
 
 server.get("/upcoming/allToday", async (request) => {
   const today = request.query.date || new Date().toISOString().split("T")[0];
-  return getUpcomingEntriesToday(today);
+  return getUpcomingEntriesToday({ today, offset: i });
 });
 
 server.register(adminRouter, { prefix: "/admin" });

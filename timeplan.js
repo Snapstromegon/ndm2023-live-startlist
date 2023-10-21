@@ -18,46 +18,107 @@ const fillEntryWithStart = async (entry) => {
   return entry;
 };
 
-export const getAllEntries = async () => {
+const estimateStart = (timeplan) => {
+  let lastEnd;
+  for (const entry of timeplan) {
+    if (entry.earliest_start) {
+      entry.earliest_start = new Date(entry.earliest_start);
+    }
+    entry.plannedStart = new Date(entry.plannedStart);
+    if (entry.status === "done") {
+      // Do nothing - entry is done
+    } else if (entry.status === "active") {
+      entry.estimated_start = new Date(entry.started);
+      lastEnd = new Date(
+        entry.estimated_start.getTime() + entry.duration_min * 60 * 1000
+      );
+    } else {
+      entry.estimated_start = new Date(
+        Math.max(
+          entry.earliest_start?.getTime() || 0,
+          new Date().getTime(),
+          lastEnd?.getTime() || 0
+        )
+      );
+      lastEnd = new Date(
+        entry.estimated_start.getTime() + entry.duration_min * 60 * 1000
+      );
+    }
+  }
+  return timeplan;
+};
+
+export const getAllEntries = async ({ offset = 0 } = {}) => {
   const timeplan = await db.all(
-    SQL`SELECT *, Timeplan.id AS 'order' FROM Timeplan LEFT JOIN StartList ON Timeplan.startlist_id = StartList.id`
+    SQL`SELECT *, Timeplan.id AS 'order' FROM Timeplan LEFT JOIN StartList ON Timeplan.startlist_id = StartList.id ORDER BY Timeplan.id ASC LIMIT -1 OFFSET ${offset}`
+  );
+  return estimateStart(await Promise.all(timeplan.map(fillEntryWithStart)));
+};
+
+export const getAllEntriesToday = async ({
+  offset = 0,
+  today = new Date().toISOString().split("T")[0],
+} = {}) => {
+  const timeplan = await db.all(
+    SQL`SELECT *, Timeplan.id AS 'order' FROM Timeplan LEFT JOIN StartList ON Timeplan.startlist_id = StartList.id WHERE Date(planned_start) = Date(${today}) ORDER BY Timeplan.id ASC LIMIT -1 OFFSET ${offset}`
   );
   return Promise.all(timeplan.map(fillEntryWithStart));
 };
 
-export const getAllEntriesToday = async (
-  today = new Date().toISOString().split("T")[0]
-) => {
-  const timeplan = await db.all(
-    SQL`SELECT *, Timeplan.id AS 'order' FROM Timeplan LEFT JOIN StartList ON Timeplan.startlist_id = StartList.id WHERE Date(planned_start) = Date(${today})`
-  );
-  return Promise.all(timeplan.map(fillEntryWithStart));
-};
-
-export const getCurrentEntry = async () => {
+export const getCurrentEntry = async ({ offset = 0 } = {}) => {
   let currentEntry = await db.get(
     SQL`SELECT *, Timeplan.id AS 'order' FROM Timeplan LEFT JOIN StartList ON Timeplan.startlist_id = StartList.id WHERE status = "active"`
   );
   // Fallback to next open entry
   if (currentEntry === undefined) {
     currentEntry = await db.get(
-      SQL`SELECT *, Timeplan.id AS 'order' FROM Timeplan LEFT JOIN StartList ON Timeplan.startlist_id = StartList.id WHERE status = "open" ORDER BY id ASC LIMIT 1`
+      SQL`SELECT *, Timeplan.id AS 'order' FROM Timeplan LEFT JOIN StartList ON Timeplan.startlist_id = StartList.id WHERE status = "open" ORDER BY Timeplan.id ASC LIMIT 1 OFFSET ${offset}`
     );
   }
   return fillEntryWithStart(currentEntry);
 };
 
-export const getUpcomingEntries = async () => {
+export const getUpcomingEntries = async ({ offset = 0 } = {}) => {
   const timeplan = await db.all(
-    SQL`SELECT *, Timeplan.id AS 'order' FROM Timeplan LEFT JOIN StartList ON Timeplan.startlist_id = StartList.id WHERE status != 'done'`
+    SQL`SELECT *, Timeplan.id AS 'order' FROM Timeplan LEFT JOIN StartList ON Timeplan.startlist_id = StartList.id WHERE status != 'done' ORDER BY Timeplan.id ASC LIMIT -1 OFFSET ${offset}`
   );
   return Promise.all(timeplan.map(fillEntryWithStart));
 };
-export const getUpcomingEntriesToday = async (
-  today = new Date().toISOString().split("T")[0]
-) => {
+
+export const getUpcomingEntriesToday = async ({
+  offset = 0,
+  today = new Date().toISOString().split("T")[0],
+} = {}) => {
   const timeplan = await db.all(
-    SQL`SELECT *, Timeplan.id AS 'order' FROM Timeplan LEFT JOIN StartList ON Timeplan.startlist_id = StartList.id WHERE Date(planned_start) = Date(${today}) AND status != 'done'`
+    SQL`SELECT *, Timeplan.id AS 'order' FROM Timeplan LEFT JOIN StartList ON Timeplan.startlist_id = StartList.id WHERE Date(planned_start) = Date(${today}) AND status != 'done' ORDER BY Timeplan.id ASC LIMIT -1 OFFSET ${offset}`
   );
   return Promise.all(timeplan.map(fillEntryWithStart));
+};
+
+export const startNextEntry = async () => {
+  await db.run(
+    SQL`UPDATE Timeplan SET status = 'done' WHERE status = 'active'`
+  );
+  const firstOpen = await db.get(
+    SQL`SELECT * FROM Timeplan WHERE status = 'open' ORDER BY Timeplan.id LIMIT 1`
+  );
+  if(firstOpen === undefined) return null;
+  await db.run(
+    SQL`UPDATE Timeplan SET status = 'active', started = datetime('now') WHERE id = ${firstOpen.id}`
+  );
+  return firstOpen.id;
+};
+
+export const revertStartNextEntry = async () => {
+  await db.run(
+    SQL`UPDATE Timeplan SET status = 'open', started = NULL WHERE status = 'active'`
+  );
+  const lastDone = await db.get(
+    SQL`SELECT * FROM Timeplan WHERE status = 'done' ORDER BY Timeplan.id DESC LIMIT 1`
+  );
+  if (lastDone === undefined) return null;
+  await db.run(
+    SQL`UPDATE Timeplan SET status = 'active' WHERE id = ${lastDone.id}`
+  );
+  return lastDone.id;
 };

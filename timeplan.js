@@ -24,7 +24,7 @@ const estimateStart = (timeplan) => {
     if (entry.earliest_start) {
       entry.earliest_start = new Date(entry.earliest_start);
     }
-    entry.plannedStart = new Date(entry.plannedStart);
+    entry.planned_start = new Date(entry.planned_start);
     if (entry.status === "done") {
       entry.estimated_start = new Date(entry.started);
     } else if (entry.status === "active") {

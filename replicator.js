@@ -27,12 +27,12 @@ server.get("/allEntries", async () => cache);
 server.get("/currentEntry", async () => cache.find((entry) => entry.status !== "done"));
 server.get("/allToday", async (request) => {
   const today = request.query.date || new Date().toISOString().split("T")[0];
-  return cache.filter((entry) => entry.planned_start.split("T")[0] === today);
+  return cache.filter((entry) => entry.estimated_start.split("T")[0] === today);
 });
 server.get("/upcoming/all", async () => cache.filter((entry) => entry.status !== "done"));
 server.get("/upcoming/allToday", async (request) => {
   const today = request.query.date || new Date().toISOString().split("T")[0];
-  return cache.filter((entry) => entry.planned_start.split("T")[0] === today && entry.status !== "done");
+  return cache.filter((entry) => entry.estimated_start.split("T")[0] === today && entry.status !== "done");
 });
 
 const listening = await server.listen({

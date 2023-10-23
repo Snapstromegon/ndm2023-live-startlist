@@ -62,7 +62,7 @@ export const getAllEntriesToday = async ({
   const timeplan = await db.all(
     SQL`SELECT *, Timeplan.id AS 'order' FROM Timeplan LEFT JOIN StartList ON Timeplan.startlist_id = StartList.id WHERE Date(planned_start) = Date(${today}) ORDER BY Timeplan.id ASC LIMIT -1 OFFSET ${offset}`
   );
-  return Promise.all(timeplan.map(fillEntryWithStart));
+  return estimateStart(await Promise.all(timeplan.map(fillEntryWithStart)));
 };
 
 export const getCurrentEntry = async ({ offset = 0 } = {}) => {
@@ -82,7 +82,7 @@ export const getUpcomingEntries = async ({ offset = 0 } = {}) => {
   const timeplan = await db.all(
     SQL`SELECT *, Timeplan.id AS 'order' FROM Timeplan LEFT JOIN StartList ON Timeplan.startlist_id = StartList.id WHERE status != 'done' ORDER BY Timeplan.id ASC LIMIT -1 OFFSET ${offset}`
   );
-  return Promise.all(timeplan.map(fillEntryWithStart));
+  return estimateStart(await Promise.all(timeplan.map(fillEntryWithStart)));
 };
 
 export const getUpcomingEntriesToday = async ({
@@ -92,7 +92,7 @@ export const getUpcomingEntriesToday = async ({
   const timeplan = await db.all(
     SQL`SELECT *, Timeplan.id AS 'order' FROM Timeplan LEFT JOIN StartList ON Timeplan.startlist_id = StartList.id WHERE Date(planned_start) = Date(${today}) AND status != 'done' ORDER BY Timeplan.id ASC LIMIT -1 OFFSET ${offset}`
   );
-  return Promise.all(timeplan.map(fillEntryWithStart));
+  return estimateStart(await Promise.all(timeplan.map(fillEntryWithStart)));
 };
 
 export const startNextEntry = async () => {

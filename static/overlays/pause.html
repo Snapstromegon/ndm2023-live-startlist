@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- <meta http-equiv="refresh" content="3" /> -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../css/fonts.css" />
+    <style>
+      body {
+        height: 100vh;
+        overflow: hidden;
+        line-height: 1.5;
+        background: var(--color-background);
+        padding: var(--xxxl);
+        font-size: 2rem;
+        --progress: 0%;
+        background: radial-gradient(
+            circle at 50% 50%,
+            var(--color-blue) 0%,
+            var(--color-blue) var(--xxxs),
+            transparent var(--xxxs)
+          ),
+          var(--color-background);
+        background-size: var(--xxl) var(--xxl);
+        display: flex;
+        flex-direction: column;
+      }
+
+      h1 {
+        background-color: var(--color-background);
+        display: inline-block;
+        padding: var(--m) var(--xl);
+      }
+
+      .wc__wrapper {
+        --fontSize: 1.5rem;
+        background: var(--color-background);
+        height: 100%;
+        --on-color: var(--text-color);
+        --off-color: #0003;
+      }
+    </style>
+    
+    <!-- The layout stylesheet for the WordClock -->
+    <link rel="stylesheet" type="text/css" href="wordclock/wc_base.css" />
+
+    <!-- The main script for the WordClock (it will add an init eventlistener on window.load) -->
+    <script src="wordclock/wc_main.js"></script>
+
+    <!-- WC-LanguagePacks they will add themselves to the database and can 
+    	be used by changing the var 'wc_language' in the wc_main.js -->
+    <script src="wordclock/wc_langPacks/wc_langPack_DE.js"></script>
+  </head>
+  <body>
+    <h1>Pause</h1>
+    <div class="wc__wrapper">
+      <!-- This element is your Wrapper and the wc element will fit it parents height and width -->
+      <div class="wc__minutes">
+        <div class="wc__minute wc__minute__1"></div>
+        <div class="wc__minute wc__minute__2"></div>
+        <div class="wc__minute wc__minute__3"></div>
+        <div class="wc__minute wc__minute__4"></div>
+      </div>
+      <div class="wc">
+        <!-- 
+      		-This Element will be recognized by the wc_main.js functions and will be filled with content 
+      		-To change classnames goto wc_main.js and change 'wc_wcClassName'. (wc_base.css has to be adjusted)
+      		-To switch flexboxes justify-content from space-around to space-between add the css class 'wc--lettersOut' to this element
+      	-->
+      </div>
+    </div>
+  </body>
+</html>

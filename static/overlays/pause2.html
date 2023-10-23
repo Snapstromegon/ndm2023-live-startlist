@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- <meta http-equiv="refresh" content="3" /> -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../css/fonts.css" />
+    <style>
+      body {
+        height: 100vh;
+        overflow: hidden;
+        line-height: 1.5;
+        background: var(--color-background);
+        padding: var(--xxxl);
+        font-size: 2rem;
+        --progress: 0%;
+        background: radial-gradient(
+            circle at 50% 50%,
+            var(--color-blue) 0%,
+            var(--color-blue) var(--xxxs),
+            transparent var(--xxxs)
+          ),
+          var(--color-background);
+        background-size: var(--xxl) var(--xxl);
+        display: flex;
+        flex-direction: column;
+      }
+
+      h1 {
+        background-color: var(--color-background);
+        display: inline-block;
+        padding: var(--m) var(--xl);
+      }
+
+      main {
+        height: 100%;
+        display: grid;
+        place-content: center;
+      }
+
+      #time {
+        font-size: 20rem;
+        font-weight: bold;
+        text-align: center;
+        font-variant: tabular-nums;
+        background-color: var(--color-background);
+        display: inline-block;
+        padding: 0 .2em;
+      }
+    </style>
+    <script type="module">
+      const update = () => {
+        const dateFormat = new Intl.DateTimeFormat("de-DE", {
+          hour: "numeric",
+          minute: "numeric",
+        });
+        document.querySelector("#time").textContent = dateFormat.format(
+          new Date()
+        );
+      };
+      setInterval(update, 1000);
+      update();
+    </script>
+  </head>
+  <body>
+    <section><h1>Pause</h1></section>
+    <main>
+      <span id="time"></span>
+    </main>
+  </body>
+</html>

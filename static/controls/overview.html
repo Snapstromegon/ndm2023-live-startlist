@@ -53,6 +53,10 @@
       #nextEntry {
         background: #0f0;
       }
+
+      #sync {
+        background: #00f;
+      }
     </style>
     <script type="module">
       const fixDates = (entry) => {
@@ -169,12 +173,21 @@
           console.log(data);
           update();
         });
+      document
+        .querySelector("#sync")
+        .addEventListener("click", async () => {
+          const response = await fetch("/admin/replicate");
+          const data = await response.json();
+          console.log(data);
+          update();
+        });
     </script>
   </head>
   <body>
     <nav>
       <button id="backEntry">Back</button>
       <button id="nextEntry">Next</button>
+      <button id="sync">Sync</button>
     </nav>
     <table>
       <thead>

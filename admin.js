@@ -5,15 +5,20 @@ import {
 } from "./timeplan.js";
 
 const updateReplicator = async () => {
-  const resp = await fetch(process.env.REPLICATOR_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      data: await getAllEntries(),
-      token: process.env.REPLICATOR_TOKEN,
-    }),
-    headers: { "Content-Type": "application/json" },
-  });
-  return resp.ok;
+  try {
+    const resp = await fetch(process.env.REPLICATOR_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        data: await getAllEntries(),
+        token: process.env.REPLICATOR_TOKEN,
+      }),
+      headers: { "Content-Type": "application/json" },
+    });
+    return resp.ok;
+  } catch (e) {
+    console.error(e);
+    return false;
+  }
 };
 
 // Update replicator at least every minute

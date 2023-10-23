@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- <meta http-equiv="refresh" content="3" /> -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../css/fonts.css" />
+    <style>
+      body {
+        height: 100vh;
+        overflow: hidden;
+        line-height: 1.5;
+      }
+
+      .card {
+        width: calc(100vw + 25vh);
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: -12.5vh;
+        transform: skew(-7deg) translateX(-100%);
+        animation: move 3s;
+        overflow: hidden;
+      }
+
+      .yellow {
+        background: var(--color-yellow);
+      }
+      .yellow.follow {
+        animation-delay: 0.4s;
+      }
+      .red {
+        background: var(--color-red);
+        animation-delay: 0.1s;
+      }
+      .red.follow {
+        animation-delay: 0.3s;
+      }
+      .blue {
+        background: var(--color-blue);
+        animation-delay: 0.2s;
+      }
+
+      main {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        color: var(--color-background);
+        transform: skew(7deg);
+        height: 100%;
+        width: 100%;
+        gap: var(--xxl);
+        align-items: center;
+        place-content: center;
+        font-size: 2rem;
+        animation: move-opposite 3s;
+        animation-delay: 0.2s;
+      }
+      img {
+        width: 33vh;
+      }
+
+      @keyframes move {
+        0% {
+          transform: skew(-7deg) translateX(-100%);
+        }
+        100% {
+          transform: skew(-7deg) translateX(100%);
+        }
+      }
+
+      @keyframes move-opposite {
+        0% {
+          transform: skew(7deg) translateX(100%);
+        }
+        100% {
+          transform: skew(7deg) translateX(-100%);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="yellow card"></div>
+    <div class="yellow follow card"></div>
+    <div class="red card"></div>
+    <div class="red follow card"></div>
+    <dev class="blue card">
+      <main>
+        <img src="../images/logo_light.svg" id="logo" />
+        <h1>Norddeutsche Meisterschaft<br>Einrad Freestyle 2023</h1>
+        <h2>SSV Nümbercht</h2>
+      </main>
+    </dev>
+  </body>
+</html>

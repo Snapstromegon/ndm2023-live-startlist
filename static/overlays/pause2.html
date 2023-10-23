@@ -28,10 +28,15 @@
         flex-direction: column;
       }
 
-      h1 {
+      h1,
+      h2 {
         background-color: var(--color-background);
         display: inline-block;
-        padding: var(--m) var(--xl);
+        padding: 0 var(--m);
+      }
+
+      h2 {
+        font-size: 1.5rem;
       }
 
       main {
@@ -47,11 +52,11 @@
         font-variant: tabular-nums;
         background-color: var(--color-background);
         display: inline-block;
-        padding: 0 .2em;
+        padding: 0 0.2em;
       }
     </style>
     <script type="module">
-      const update = () => {
+      const update = async () => {
         const dateFormat = new Intl.DateTimeFormat("de-DE", {
           hour: "numeric",
           minute: "numeric",
@@ -59,13 +64,24 @@
         document.querySelector("#time").textContent = dateFormat.format(
           new Date()
         );
+        const resp = await fetch("/currentEntry");
+        const data = await resp.json();
+        document.querySelector("#event_name").textContent =
+          data?.status == "active" &&
+          data?.event_type.startsWith("break")
+            ? data.event_name
+            : "";
       };
       setInterval(update, 1000);
       update();
     </script>
   </head>
   <body>
-    <section><h1>Pause</h1></section>
+    <section>
+      <h1>Pause</h1>
+      <br />
+      <h2 id="event_name"></h2>
+    </section>
     <main>
       <span id="time"></span>
     </main>

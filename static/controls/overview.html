@@ -34,7 +34,7 @@
       }
 
       td td {
-        padding: .2rem;
+        padding: 0.2rem;
       }
 
       tr.done {
@@ -58,6 +58,7 @@
         background: #00f;
       }
     </style>
+    <script src="./obs-ws.min.js"></script>
     <script type="module">
       const fixDates = (entry) => {
         entry.planned_start = new Date(entry.planned_start);
@@ -65,11 +66,43 @@
         entry.estimated_start = new Date(entry.estimated_start);
       };
 
+      const obs = new OBSWebSocket();
+      let currentScene;
+      obs.on("CurrentProgramSceneChanged", (e) => {
+        console.log(e);
+        currentScene = e?.sceneName || "Pause";
+      });
+
+      const obsUrl = new URL(window.location.href);
+      obsUrl.port = 4455;
+      obsUrl.pathname = "/obs";
+      obsUrl.protocol = "ws";
+
+      await obs.connect(obsUrl.href, undefined, {
+        rpcVersion: 1,
+      });
+
+      const setOBSScene = async (entry) => {
+        const targetScene =
+          !entry || entry?.event_type.startsWith("break")
+            ? "Pause"
+            : "Sponsoren";
+        if (currentScene != targetScene) {
+          console.log(currentScene, targetScene);
+          currentScene = targetScene;
+          await obs.call("SetCurrentProgramScene", { sceneName: targetScene });
+        }
+      };
+
+      const getActiveEntry = (entries) => {
+        return entries.find((entry) => entry.status == "active");
+      };
+
       const update = async () => {
         const response = await fetch("/allEntries");
         const entries = await response.json();
         entries.forEach(fixDates);
-        console.log(entries);
+        setOBSScene(getActiveEntry(entries));
         const dateFormat = new Intl.DateTimeFormat("de-DE", {
           year: "numeric",
           month: "2-digit",
@@ -173,15 +206,14 @@
           console.log(data);
           update();
         });
-      document
-        .querySelector("#sync")
-        .addEventListener("click", async () => {
-          const response = await fetch("/admin/replicate");
-          const data = await response.json();
-          console.log(data);
-          update();
-        });
+      document.querySelector("#sync").addEventListener("click", async () => {
+        const response = await fetch("/admin/replicate");
+        const data = await response.json();
+        console.log(data);
+        update();
+      });
     </script>
+    <script type="module" src="./obs-scene-switcher.js"></script>
   </head>
   <body>
     <nav>

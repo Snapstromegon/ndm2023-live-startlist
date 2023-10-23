@@ -82,12 +82,15 @@
         rpcVersion: 1,
       });
 
+      currentScene = (await obs.call("GetCurrentProgramScene"))
+        .currentProgramSceneName;
+
       const setOBSScene = async (entry) => {
         const targetScene =
           !entry || entry?.event_type.startsWith("break")
             ? "Pause"
             : "Sponsoren";
-        if (currentScene != targetScene) {
+        if (currentScene && currentScene != targetScene) {
           console.log(currentScene, targetScene);
           currentScene = targetScene;
           await obs.call("SetCurrentProgramScene", { sceneName: targetScene });
@@ -213,7 +216,6 @@
         update();
       });
     </script>
-    <script type="module" src="./obs-scene-switcher.js"></script>
   </head>
   <body>
     <nav>

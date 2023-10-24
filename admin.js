@@ -2,6 +2,7 @@ import {
   getAllEntries,
   revertStartNextEntry,
   startNextEntry,
+  endCurrentEntry,
 } from "./timeplan.js";
 
 const updateReplicator = async () => {
@@ -28,6 +29,11 @@ const adminRouter = async (fastify, options) => {
   fastify.get("/replicate", async () => updateReplicator());
   fastify.get("/startNext", async () => {
     const res = await startNextEntry();
+    updateReplicator();
+    return res;
+  });
+  fastify.get("/endCurrent", async () => {
+    const res = await endCurrentEntry();
     updateReplicator();
     return res;
   });

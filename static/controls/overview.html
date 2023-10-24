@@ -67,8 +67,8 @@
       };
 
       let currentOBSScene;
+      const obs = new OBSWebSocket();
       const connectOBS = async () => {
-        const obs = new OBSWebSocket();
         obs.on("CurrentProgramSceneChanged", (e) => {
           console.log(e);
           currentOBSScene = e?.sceneName || "Pause";
@@ -205,6 +205,14 @@
           update();
         });
       document
+        .querySelector("#endEntry")
+        .addEventListener("click", async () => {
+          const response = await fetch("/admin/endCurrent");
+          const data = await response.json();
+          console.log(data);
+          update();
+        });
+      document
         .querySelector("#nextEntry")
         .addEventListener("click", async () => {
           const response = await fetch("/admin/startNext");
@@ -223,6 +231,7 @@
   <body>
     <nav>
       <button id="backEntry">Back</button>
+      <button id="endEntry">End</button>
       <button id="nextEntry">Next</button>
       <button id="sync">Sync</button>
     </nav>

@@ -102,11 +102,18 @@ export const startNextEntry = async () => {
   const firstOpen = await db.get(
     SQL`SELECT * FROM Timeplan WHERE status = 'open' ORDER BY Timeplan.id LIMIT 1`
   );
-  if(firstOpen === undefined) return null;
+  if (firstOpen === undefined) return null;
   await db.run(
     SQL`UPDATE Timeplan SET status = 'active', started = strftime('%Y-%m-%dT%H:%M:%fZ', 'now') WHERE id = ${firstOpen.id}`
   );
   return firstOpen.id;
+};
+
+export const endCurrentEntry = async () => {
+  const res = await db.run(
+    SQL`UPDATE Timeplan SET status = 'done' WHERE status = 'active'`
+  );
+  return res.lastID;
 };
 
 export const revertStartNextEntry = async () => {

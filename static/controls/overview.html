@@ -66,33 +66,36 @@
         entry.estimated_start = new Date(entry.estimated_start);
       };
 
-      const obs = new OBSWebSocket();
-      let currentScene;
-      obs.on("CurrentProgramSceneChanged", (e) => {
-        console.log(e);
-        currentScene = e?.sceneName || "Pause";
-      });
+      let currentOBSScene;
+      const connectOBS = async () => {
+        const obs = new OBSWebSocket();
+        obs.on("CurrentProgramSceneChanged", (e) => {
+          console.log(e);
+          currentOBSScene = e?.sceneName || "Pause";
+        });
 
-      const obsUrl = new URL(window.location.href);
-      obsUrl.port = 4455;
-      obsUrl.pathname = "/obs";
-      obsUrl.protocol = "ws";
+        const obsUrl = new URL(window.location.href);
+        obsUrl.port = 4455;
+        obsUrl.pathname = "/obs";
+        obsUrl.protocol = "ws";
 
-      await obs.connect(obsUrl.href, undefined, {
-        rpcVersion: 1,
-      });
+        await obs.connect(obsUrl.href, undefined, {
+          rpcVersion: 1,
+        });
 
-      currentScene = (await obs.call("GetCurrentProgramScene"))
-        .currentProgramSceneName;
+        currentOBSScene = (await obs.call("GetCurrentProgramScene"))
+          .currentProgramSceneName;
+      };
+      connectOBS().catch(() => alert("OBS not connected"));
 
       const setOBSScene = async (entry) => {
         const targetScene =
           !entry || entry?.event_type.startsWith("break")
             ? "Pause"
             : "Sponsoren";
-        if (currentScene && currentScene != targetScene) {
-          console.log(currentScene, targetScene);
-          currentScene = targetScene;
+        if (currentOBSScene && currentOBSScene != targetScene) {
+          console.log(currentOBSScene, targetScene);
+          currentOBSScene = targetScene;
           await obs.call("SetCurrentProgramScene", { sceneName: targetScene });
         }
       };

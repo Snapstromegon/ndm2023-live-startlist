@@ -4,7 +4,7 @@ import sqlite3 from "sqlite3";
 import { writeTimeplanEntry } from "./localFileSyncer.js";
 
 const db = await open({
-  filename: "starts.db",
+  filename: process.env.DB_PATH || "starts.db",
   driver: sqlite3.Database,
 });
 

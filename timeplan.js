@@ -1,6 +1,7 @@
 import SQL from "sql-template-strings";
 import { open } from "sqlite";
 import sqlite3 from "sqlite3";
+import { writeTimeplanEntry } from "./localFileSyncer.js";
 
 const db = await open({
   filename: "starts.db",
@@ -95,6 +96,8 @@ export const getUpcomingEntriesToday = async ({
   return estimateStart(await Promise.all(timeplan.map(fillEntryWithStart)));
 };
 
+const updateFiles = async () => writeTimeplanEntry(await getCurrentEntry());
+
 export const startNextEntry = async () => {
   await db.run(
     SQL`UPDATE Timeplan SET status = 'done' WHERE status = 'active'`
@@ -106,6 +109,7 @@ export const startNextEntry = async () => {
   await db.run(
     SQL`UPDATE Timeplan SET status = 'active', started = strftime('%Y-%m-%dT%H:%M:%fZ', 'now') WHERE id = ${firstOpen.id}`
   );
+  updateFiles();
   return firstOpen.id;
 };
 
@@ -113,6 +117,7 @@ export const endCurrentEntry = async () => {
   const res = await db.run(
     SQL`UPDATE Timeplan SET status = 'done' WHERE status = 'active'`
   );
+  updateFiles();
   return res.lastID;
 };
 
@@ -127,5 +132,6 @@ export const revertStartNextEntry = async () => {
   await db.run(
     SQL`UPDATE Timeplan SET status = 'active' WHERE id = ${lastDone.id}`
   );
+  updateFiles();
   return lastDone.id;
 };

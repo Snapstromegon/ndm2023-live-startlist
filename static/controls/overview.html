@@ -92,6 +92,8 @@
         const targetScene =
           !entry || entry?.event_type.startsWith("break")
             ? "Pause"
+            : entry?.start?.video_url
+            ? "Videokür"
             : "Sponsoren";
         if (currentOBSScene && currentOBSScene != targetScene) {
           console.log(currentOBSScene, targetScene);

@@ -58,46 +58,11 @@
         background: #00f;
       }
     </style>
-    <script src="./obs-ws.min.js"></script>
     <script type="module">
       const fixDates = (entry) => {
         entry.planned_start = new Date(entry.planned_start);
         if (entry.started) entry.started = new Date(entry.started);
         entry.estimated_start = new Date(entry.estimated_start);
-      };
-
-      let currentOBSScene;
-      const obs = new OBSWebSocket();
-      const connectOBS = async () => {
-        obs.on("CurrentProgramSceneChanged", (e) => {
-          console.log(e);
-          currentOBSScene = e?.sceneName || "Pause";
-        });
-
-        const obsUrl = new URL(window.location.href);
-        obsUrl.port = 4455;
-        obsUrl.pathname = "/obs";
-        obsUrl.protocol = "ws";
-
-        await obs.connect(obsUrl.href, undefined, {
-          rpcVersion: 1,
-        });
-
-        currentOBSScene = (await obs.call("GetCurrentProgramScene"))
-          .currentProgramSceneName;
-      };
-      connectOBS().catch(() => alert("OBS not connected"));
-
-      const setOBSScene = async (entry) => {
-        const targetScene =
-          !entry || entry?.event_type.startsWith("break")
-            ? "Pause"
-            : "Sponsoren";
-        if (currentOBSScene && currentOBSScene != targetScene) {
-          console.log(currentOBSScene, targetScene);
-          currentOBSScene = targetScene;
-          await obs.call("SetCurrentProgramScene", { sceneName: targetScene });
-        }
       };
 
       const getActiveEntry = (entries) => {
@@ -108,7 +73,6 @@
         const response = await fetch("/allEntries");
         const entries = await response.json();
         entries.forEach(fixDates);
-        setOBSScene(getActiveEntry(entries));
         const dateFormat = new Intl.DateTimeFormat("de-DE", {
           year: "numeric",
           month: "2-digit",

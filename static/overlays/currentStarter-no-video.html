@@ -44,25 +44,19 @@
     </style>
     <script type="module">
       let currentOrder = undefined;
-      const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-      const awaitTransitionEnd = (element) =>
-        new Promise((resolve) =>
-          element.addEventListener("transitionend", resolve, { once: true })
-        );
 
       const starter = document.getElementById("starter");
       const starterName = document.getElementById("starter_name");
       const actName = document.getElementById("act_name");
 
       const update = async () => {
-        const response = await fetch("https://startlist.uberspace.ndmfreestyle23.de/currentEntry");
+        const response = await fetch("/currentEntry");
         const data = await response.json();
         if (data.order !== currentOrder) {
           currentOrder = data.order;
           if (data.event_type === "act") {
             starter.classList.add("switching");
             if (!starter.classList.contains("break")) {
-              await awaitTransitionEnd(starter);
             } else {
               starter.classList.remove("break");
             }
@@ -78,8 +72,6 @@
               starterName.innerText = data.label;
             }
             actName.innerText = data.start?.name || data.start_group;
-            await sleep(300);
-            starter.classList.remove("switching");
           } else {
             starter.classList.add("break");
           }

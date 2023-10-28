@@ -34,6 +34,10 @@ export const writeTimeplanEntry = async (entry) => {
       await writeName(entry.label);
       await writeTeam(entry.start_group);
     }
+  } if (entry.event_type == "break:warmup") {
+    await writeName("Einfahrzeit");
+    await writeTeam("");
+    
   } else {
     await writeName("");
     await writeTeam("");

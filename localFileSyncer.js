@@ -15,7 +15,17 @@ export const writeTimeplanEntry = async (entry) => {
             .map((starter) => starter.firstname + " " + starter.lastname)
             .join(" und ")
         );
-        await writeTeam(entry.start.starters.map((s) => s.club).join(" und "));
+        if (
+          entry.start.starters.length === 2 &&
+          entry.start.starters[0].club.toLowerCase() !==
+            entry.start.starters[1].club.toLowerCase()
+        ) {
+          await writeTeam(
+            entry.start.starters.map((s) => s.club).join(" und ")
+          );
+        } else {
+          await writeTeam(entry.start.starters[0].club);
+        }
       } else {
         await writeName(entry.start.name);
         await writeTeam(entry.start.teamname);

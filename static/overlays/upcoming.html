@@ -120,7 +120,7 @@
 
       const wrapper = document.querySelector(".wrapper");
       const update = async () => {
-        const response = await fetch("/upcoming/allToday?date=2023-10-27");
+        const response = await fetch("/upcoming/allToday");
         const data = await response.json();
         console.log(data);
         wrapper.innerHTML = "";

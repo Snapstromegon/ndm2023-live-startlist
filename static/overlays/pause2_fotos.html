@@ -83,6 +83,7 @@
       }
       #upcoming_photos img {
         height: 100%;
+        width: initial;
         object-fit: contain;
         min-width: initial;
       }
@@ -109,7 +110,7 @@
       const photos = [];
 
       const loadPhoto = async () => {
-        const baseUrl = new URL("http://localhost:8001/random");
+        const baseUrl = new URL("http://192.168.178.40:8001/random");
         const resp = await fetch(baseUrl);
         const path = await resp.text();
         baseUrl.pathname = path;
@@ -124,14 +125,14 @@
       const updateUpcoming = () => {
         const upcomingPhotos = document.querySelector("#upcoming_photos");
         upcomingPhotos.innerHTML = "";
-        for (let i = 0; i < 6; i++) {
+        for (const photo of photos) {
           const img = document.createElement("img");
-          img.src = photos[i];
+          img.src = photo;
           upcomingPhotos.appendChild(img);
         }
       };
 
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < 20; i++) {
         await loadPhoto();
       }
       console.log(photos);

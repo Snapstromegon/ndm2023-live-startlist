@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../css/fonts.css" />
+    <style>
+      html {
+        font-size: 2rem;
+      }
+
+      body {
+        background-color: var(--color-blue);
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      .entry {
+        display: grid;
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: 1fr auto auto;
+        grid-template-areas: "start_name time star" "starter group star";
+        gap: var(--xxxs) var(--s);
+        padding: var(--s);
+        color: var(--color-background);
+        text-align: center;
+      }
+
+      #starter {
+        grid-area: starter;
+      }
+
+      #name {
+        grid-area: start_name;
+        font-weight: bold;
+        font-size: var(--l);
+      }
+
+      #time {
+        grid-area: time;
+        text-align: right;
+      }
+
+      #group {
+        grid-area: group;
+        text-align: right;
+      }
+
+      .event_type_act {
+        background: var(--color-background-secondary);
+      }
+
+      .event_type_ceremony {
+        background: var(--color-yellow);
+        color: var(--text-color);
+      }
+
+      .event_type_break {
+        background: var(--text-color);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <h1 class="entry">Vielen Dank und auf Wiedersehen!</h1>
+    </div>
+  </body>
+</html>

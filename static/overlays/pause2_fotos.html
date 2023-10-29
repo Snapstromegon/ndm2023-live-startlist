@@ -27,8 +27,8 @@
         display: grid;
         gap: var(--l);
         grid-template-rows: auto auto 1fr 7rem;
-        grid-template-columns: auto 1fr;
-        grid-template-areas: "label current_photo" "time current_photo" ". current_photo" "upcoming_photos upcoming_photos";
+        grid-template-columns: 1fr auto;
+        grid-template-areas: "current_photo label" "current_photo time" "current_photo ." "upcoming_photos upcoming_photos";
       }
 
       #label {

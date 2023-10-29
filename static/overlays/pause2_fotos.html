@@ -26,9 +26,9 @@
         background-size: var(--xxl) var(--xxl);
         display: grid;
         gap: var(--l);
-        grid-template-rows: auto 1fr 7rem;
+        grid-template-rows: auto auto 1fr 7rem;
         grid-template-columns: 1fr auto;
-        grid-template-areas: "label time" "current_photo current_photo" "upcoming_photos upcoming_photos";
+        grid-template-areas: "label current_photo" "time current_photo" ". current_photo" "upcoming_photos upcoming_photos";
       }
 
       #label {
